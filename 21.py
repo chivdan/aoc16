@@ -1,6 +1,5 @@
 def solve(part1: bool):
-    #pwd = "abcdefgh" if part1 else "fbgdceah"
-    pwd = "dgfaehcb"
+    pwd = "abcdefgh" if part1 else "fbgdceah"
     s = [c for c in pwd]
 
     instructions = [line.strip() for line in open("input.txt")]
@@ -35,10 +34,18 @@ def solve(part1: bool):
         elif "rotate based on position" in line:
             letter = cmd[-1]
             index = s.index(letter)
-            steps = 1 + index + (1 if index >= 4 else 0)
-            if not part1:
-                steps = -steps
-            s = [s[(i - steps) % len(s)] for i in range(len(s))]
+            if part1:
+                steps = 1 + index + (1 if index >= 4 else 0)
+                s = [s[(i - steps) % len(s)] for i in range(len(s))]
+            else:
+                for steps in range(1, len(s) + 1):
+                    new_s = [s[(i + steps) % len(s)] for i in range(len(s))]
+                    index = new_s.index(letter)
+                    steps = 1 + index + (1 if index >= 4 else 0)
+                    new_s_right = [new_s[(i - steps) % len(s)] for i in range(len(s))]
+                    if new_s_right == s:
+                        s = new_s
+                        break
         elif "reverse" in line:
             i, j = int(cmd[2]), int(cmd[4])
             s = s[:i] + list(reversed(s[i:j + 1])) + s[j + 1:]
@@ -52,5 +59,5 @@ def solve(part1: bool):
     print("".join(s))
 
 if __name__ == '__main__':
-    #solve(True)
+    solve(True)
     solve(False)
